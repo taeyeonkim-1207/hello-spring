@@ -12,4 +12,8 @@ public interface DemoService {
 
 	Dev selectOneDev(int no);
 
+	int updateDev(Dev dev);
+
+	int deleteDev(int no);
+
 }

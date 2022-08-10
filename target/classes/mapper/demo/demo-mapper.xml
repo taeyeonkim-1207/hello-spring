@@ -26,4 +26,9 @@
 		set name = #{name}, career = #{career}, email = #{email}, gender = #{gender}, lang = #{lang}
 		where no = #{no}
 	</update>
+	
+	<delete id="deleteDev">
+		delete from dev where no = #{no}
+	</delete>
+	
  </mapper>

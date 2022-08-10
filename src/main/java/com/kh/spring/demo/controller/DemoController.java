@@ -162,5 +162,18 @@ public class DemoController {
 		model.addAttribute("dev", dev);
 		return "demo/devUpdateForm";
 	}
+	@RequestMapping(path = "/updateDev.do", method = RequestMethod.POST)
+	public String updateDev(Dev dev, RedirectAttributes redirectAttr) {
+		int result = demoService.updateDev(dev);
+		redirectAttr.addFlashAttribute("msg","Dev정보 수정 성공");
+		return "redirect:/demo/devList.do";
+	}
+	
+	@RequestMapping(path = "/deleteDev.do", method = RequestMethod.POST)
+	public String deleteDev(@RequestParam int no, RedirectAttributes redirectAttr) {
+		int result = demoService.deleteDev(no);
+		redirectAttr.addFlashAttribute("msg","Dev정보 삭제 성공");
+		return "redirect:/demo/devList.do";
+	}
 }
 
