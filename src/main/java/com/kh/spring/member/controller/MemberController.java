@@ -3,9 +3,13 @@ package com.kh.spring.member.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring.member.model.dto.Member;
@@ -17,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/member")
 @Slf4j
+@SessionAttributes({"loginMember"})
+
 public class MemberController {
 
 //	의존주입
@@ -63,5 +69,57 @@ public class MemberController {
 //			spring container에게 알림
 			throw e; 
 		}
+	}
+	
+	/**
+	 * viewName이 null인 경우, 요청url을 기준으로 jsp의 위치를 추론한다.
+	 * 
+	 * /member/memberLogin.do
+	 * 	-> member/memberLogin
+	 * 
+	 * */
+	@GetMapping("/memberLogin.do")
+	public void memberLogin() {
+		
+	}
+	
+	@PostMapping("/memberLogin.do")
+	public String memberLogin(
+			@RequestParam String memberId, 
+			@RequestParam String password, 
+			Model model,
+			RedirectAttributes redirectAttr) {
+		
+//		1. memberId로 회원조회
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		String location = "/";
+//		2. member가 null이 아니면서 비밀번호가 일치하면 로그인 성공
+		if(member != null && bcryptPasswordEncoder.matches(password, member.getPassword())) {
+//			model을 통해 session scope에 속성 저장법: 클래스레벨에 @SessionAttributes 등록
+			model.addAttribute("loginMember", member);
+		}
+//		로그인 실패
+		else {
+			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다");
+			location = "/member/memberLogin.do";
+		}
+		return "redirect:" + location;
+		
+	}
+	
+	/**
+	 * @SessionAttributes로 세션 관리를 한다면, SessionStatus#setComplete으로 만료처리해야 한다.
+	 * 
+	 * */
+	@GetMapping("memberLogout.do")
+	public String memberLogout(SessionStatus sessionStatus) {
+//		session 객체 다 썼는지 확인		
+		if(sessionStatus.isComplete()) {
+			sessionStatus.setComplete();
+		}
+		
+		return "redirect:/";
 	}
 }

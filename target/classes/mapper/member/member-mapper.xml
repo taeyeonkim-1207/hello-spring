@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.spring.member.model.dao.MemberDao"> 
+<mapper namespace="com.kh.spring.member.model.dao.MemberDao">
 	<insert id="insertMember">
-		insert into 
-			member 
+		insert into
+			member
 		values(
 			#{memberId},
 			#{password},
@@ -20,4 +20,10 @@
 			default,
 			default)
 	</insert>
+
+	<select id="selectOneMember" resultType="member">
+		select * from member where member_id = #{memberId}
+	</select>  
+
+	
 </mapper>
