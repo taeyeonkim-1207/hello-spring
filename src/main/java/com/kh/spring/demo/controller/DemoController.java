@@ -162,6 +162,7 @@ public class DemoController {
 		model.addAttribute("dev", dev);
 		return "demo/devUpdateForm";
 	}
+	
 	@RequestMapping(path = "/updateDev.do", method = RequestMethod.POST)
 	public String updateDev(Dev dev, RedirectAttributes redirectAttr) {
 		int result = demoService.updateDev(dev);
