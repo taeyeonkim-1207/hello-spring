@@ -30,7 +30,7 @@
 		<constructor-arg ref="sqlSessionFactoryBean" index="0"/>
 	</bean>	
 
-	<!-- #6.3 @Mapper 인터페이스 등록: Dao 구현객체를 동적으로 생성 -->
+	<!-- #6.3 @Mapper 인터페이스 등록: Dao 구현객체(DaoImpl)를 동적으로 생성 -->
 	<mybatis-spring:scan base-package="com.kh.spring.**.dao"/>
 </beans>
 

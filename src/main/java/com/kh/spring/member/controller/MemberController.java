@@ -5,11 +5,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.spring.member.model.dto.Member;
@@ -113,7 +116,7 @@ public class MemberController {
 	 * @SessionAttributes로 세션 관리를 한다면, SessionStatus#setComplete으로 만료처리해야 한다.
 	 * 
 	 * */
-	@GetMapping("memberLogout.do")
+	@GetMapping("/memberLogout.do")
 	public String memberLogout(SessionStatus sessionStatus) {
 //		session 객체 다 썼는지 확인		
 		if(sessionStatus.isComplete()) {
@@ -121,5 +124,25 @@ public class MemberController {
 		}
 		
 		return "redirect:/";
+	}
+	
+	@GetMapping("/memberDetail.do")
+	public ModelAndView memberDetail(ModelAndView mav, @SessionAttribute Member loginMember) {
+		log.debug("loginMember = {}", loginMember);
+		
+		mav.setViewName("member/memberDetail");
+		return mav;
+	}
+	
+	@PostMapping("/memberUpdate.do")
+	public String memberUpdate(@ModelAttribute Member member, RedirectAttributes redirectAttr, Model model) {
+		log.debug("member = {}" , member);
+		
+		int result = memberService.updateMember(member);
+		
+		model.addAttribute("loginMember", memberService.selectOneMember(member.getMemberId()));
+		
+		redirectAttr.addFlashAttribute("msg", "회원정보를 성공적으로 수정했습니다");
+		return "redirect:/member/memberDetail.do";
 	}
 }
