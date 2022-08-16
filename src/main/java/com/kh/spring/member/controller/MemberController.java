@@ -118,8 +118,8 @@ public class MemberController {
 	 * */
 	@GetMapping("/memberLogout.do")
 	public String memberLogout(SessionStatus sessionStatus) {
-//		session 객체 다 썼는지 확인		
-		if(sessionStatus.isComplete()) {
+//		session내에 저장된 model이 있는지 체크 
+		if(!sessionStatus.isComplete()) {
 			sessionStatus.setComplete();
 		}
 		
@@ -136,13 +136,12 @@ public class MemberController {
 	
 	@PostMapping("/memberUpdate.do")
 	public String memberUpdate(@ModelAttribute Member member, RedirectAttributes redirectAttr, Model model) {
-		log.debug("member = {}" , member);
-		
+		log.debug("member = {}", member);
 		int result = memberService.updateMember(member);
-		
 		model.addAttribute("loginMember", memberService.selectOneMember(member.getMemberId()));
-		
-		redirectAttr.addFlashAttribute("msg", "회원정보를 성공적으로 수정했습니다");
+		redirectAttr.addFlashAttribute("msg", "회원정보를 성공적으로 수정했습니다.");
 		return "redirect:/member/memberDetail.do";
 	}
+	
 }
+
