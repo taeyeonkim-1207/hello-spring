@@ -13,7 +13,12 @@ public interface BoardService {
 	int getTotalContent();
 
 	int insertBoard(Board board);
+	
 	int insertAttachment(Attachment attachment);
+
+	Board selectOneBoard(int no);
+
+	Attachment selectOneAttachment(int no);
 
 	
 }

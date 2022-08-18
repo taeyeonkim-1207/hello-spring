@@ -30,7 +30,7 @@
 	<context:component-scan
 		base-package="com.kh.spring" />
 
-	<!-- #8. interceptor 등록 -->
+	<!-- #8. interceptor 등록, 로그인처리 -->
 	<interceptors>
 		<interceptor>
 			<mapping path="/**" />
@@ -42,6 +42,8 @@
 			<mapping path="/member/memberUpdate.do" />
 			<mapping path="/board/**" />
 			<exclude-mapping path="/board/boardList.do"/>
+			<exclude-mapping path="/board/boardDetail.do"/>
+			<exclude-mapping path="/board/fileDownload.do"/>
 			<beans:bean id="loginInteceptor"
 				class="com.kh.spring.common.interceptor.LoginInterceptor" />
 		</interceptor>

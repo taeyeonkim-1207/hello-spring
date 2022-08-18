@@ -21,6 +21,6 @@ public class Attachment {
 	@NonNull
 	private String renamedFilename;
 	private int downloadCount;
-	private LocalDateTime createAt;
+	private LocalDateTime createdAt;
 	
 }

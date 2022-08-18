@@ -198,4 +198,17 @@ COMMIT;
 select * from board;
 select * from attachment;
 
-
+select b.*, 
+    m.*, 
+    a.no attach_no, 
+    a.board_no, 
+    a.original_filename, 
+    a.renamed_filename, 
+    a.download_count, 
+    a.created_at
+from board b
+    left join member m
+        on b.member_id = m.member_id
+    left outer join attachment a
+        on b.no = a.board_no
+where b.no=81;
