@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -55,21 +59,33 @@
                         </div>
 				    </li>
 				    <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/todo/todoList.do">Todo</a></li>
+				    
+				    <sec:authorize access="hasRole('ADMIN')">
+					    <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/admin/memberList.do">관리자</a></li>
+				    </sec:authorize>
+				    
 			    </ul>
 			    
-			    <c:if test="${empty loginMember }">
+			   <sec:authorize access="isAnonymous()">
 				    <button class="btn btn-outline-success my-2 my-sm-0" type="button" 
 				    	onclick="location.href='${pageContext.request.contextPath}/member/memberLogin.do';">로그인</button>
 	                &nbsp;
 	                <button class="btn btn-outline-success my-2 my-sm-0" type="button"
 	                	onclick="location.href='${pageContext.request.contextPath}/member/memberEnroll.do';">회원가입</button>
-			    </c:if>
-			    <c:if test="${not empty loginMember}">
-			    	<span><a href="${pageContext.request.contextPath}/member/memberDetail.do">${loginMember.name}</a>님, 안녕하세요😶‍🌫️</span>
+			   </sec:authorize>
+			   <sec:authorize access="isAuthenticated()">
+			    	<span>
+			    		<a href="${pageContext.request.contextPath}/member/memberDetail.do">
+			    			<sec:authentication property="principal.username"/>
+			    			<sec:authentication property="authorities"/>
+			    		</a>님, 안녕하세요🛸
+			    	</span>
 			    	&nbsp;
-	                <button class="btn btn-outline-success my-2 my-sm-0" type="button"
-	                	onclick="location.href='${pageContext.request.contextPath}/member/memberLogout.do';">로그아웃</button>
-			    </c:if>
+			   		<form action="${pageContext.request.contextPath}/member/memberLogout.do" method="POST">
+		                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">로그아웃</button>
+			   			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			   		</form>
+			   </sec:authorize> 
 			 </div>
 		</nav>
 	</header>

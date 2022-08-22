@@ -27,7 +27,7 @@ import com.kh.spring.member.model.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 
 // 클래스레벨
-@Controller
+//@Controller
 @RequestMapping("/member")
 @Slf4j
 @SessionAttributes({"loginMember"})
