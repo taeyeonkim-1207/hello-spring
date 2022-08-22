@@ -59,4 +59,18 @@
 		<beans:property name="maxUploadSizePerFile" value="10245760"></beans:property><!-- 10mb 한건의 파일당 용량 -->
 		<beans:property name="maxInMemorySize" value="10240"></beans:property><!-- 10kb이상이면 임시파일을 생성해 관리 -->
 	</beans:bean>
+	
+	<!-- #12.1 jsonView 빈등록 -->
+	<beans:bean id="jsonView" class="net.sf.json.spring.web.servlet.view.JsonView">
+		<beans:property name="contentType" value="application/json; charset=utf-8"/>
+	</beans:bean>
+	
+	<!-- #12.2. BeanNameViewResolver viewName에 해당하는 빈을 view로 연결하는 resolver -->
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="1"/>
+	</beans:bean>
+	
+	<!-- #13.1 jackson message converter bean 등록 (사용추천) -->
+	<beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	
 </beans:beans>

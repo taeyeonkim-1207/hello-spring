@@ -1,6 +1,11 @@
 package com.kh.spring.member.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
@@ -141,6 +147,70 @@ public class MemberController {
 		model.addAttribute("loginMember", memberService.selectOneMember(member.getMemberId()));
 		redirectAttr.addFlashAttribute("msg", "회원정보를 성공적으로 수정했습니다.");
 		return "redirect:/member/memberDetail.do";
+	}
+	
+	/**
+	 * jsonView 빈을 통해 ajax 응답하기
+	 * - model에 담긴 속성을 json 문자열로 변환해서 응답메세지 body에 출력한다.
+	 * - BeanNameViewResolver를 통해서 viewName에 해당하는 빈을 찾는다.
+	 * 
+	 *  @return
+	 * 
+	 * */
+	
+//	@GetMapping("/checkIdDuplicate.do")
+	public String checkIdDuplicate1(@RequestParam String memberId, Model model) {
+		Member member = memberService.selectOneMember(memberId);
+//		사용가능하다면 null반환(없다면 true,사용가능하다)
+		boolean available = member == null;
+		
+//		사용자에게 전달할 데이터를 model 속성에 저장
+		model.addAttribute("memberId", memberId);
+		model.addAttribute("available", available);
+		
+		return "jsonView";
+	}
+	
+	
+	/**
+	 * 
+	 * - MessageConverter에 의해 리턴객체를 json으로 변환.
+	 * 
+	 * @ResponseBody
+	 * - 핸들러의 리턴객체를 응답메세지 body에 작성한다.
+	 * 
+	 * */
+	
+//	@GetMapping("/checkIdDuplicate.do")
+	@ResponseBody
+	public Map<String, Object> checkIdDuplicate2(@RequestParam String memberId) {
+		Member member = memberService.selectOneMember(memberId);
+		boolean available = member == null;
+				
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberId", memberId);
+		map.put("available", available);
+		return map;
+	}
+	
+	/**
+	 * ResponseEntity
+	 * - @ResponseBody 기능
+	 * - 핸들러에서 응답코드, 응답헤더, 메세지바디를 자유롭게 제어할 수 있도록 도와주는 객체
+	 * - 메세지 바디에 작성할 자바객체는 messageConverter빈에 의해 json으로 처리됨.
+	 * 
+	 * */
+	
+	@GetMapping("/checkIdDuplicate.do")
+	@ResponseBody
+	public ResponseEntity<?> checkIdDuplicate3(@RequestParam String memberId) {
+		Member member = memberService.selectOneMember(memberId);
+		boolean available = member == null;
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberId", memberId);
+		map.put("available", available);
+		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
 	
 }

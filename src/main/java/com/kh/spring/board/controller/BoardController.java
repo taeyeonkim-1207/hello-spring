@@ -152,6 +152,8 @@ public class BoardController {
 		response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 		
 		return resource;
+
+
 	}
 	
 	@GetMapping("/boardUpdate.do")
@@ -169,9 +171,47 @@ public class BoardController {
 	 */
 	
 	@PostMapping("/boardUpdate.do")
-	public String boardUpdate() {
-		return "redirect:/board/boardDetail.do";
+	public String boardUpdate(
+			Board board, 
+			@RequestParam(name = "upFile") List<MultipartFile> upFileList, 
+			@RequestParam(name = "delFile", required = false) List<Integer> delFiles,
+			RedirectAttributes redirectAttr) 
+					throws IllegalStateException, IOException {
+		
+		String saveDirectory = application.getRealPath("/resources/upload/board");
+		int result = 0;
+//		1. 첨부파일 삭제(서버에 저장된 파일삭제, DB의 attachment row 삭제)
+		if(delFiles != null) {
+			for(int attachNo : delFiles) {
+				Attachment attach = boardService.selectOneAttachment(attachNo);
+				File delFile = new File(saveDirectory, attach.getRenamedFilename());
+				boolean deleted = delFile.delete();
+				log.debug("{} 파일 삭제: {}", attach.getRenamedFilename(), deleted);
+				
+//				DB의 attachment row 삭제
+				result = boardService.deleteAttachment(attachNo);
+				log.debug("{}번 attachment recored 삭제", attachNo );
+			}
+		}
+//		2. 업로드파일 등록(서버에 저장, DB insert할 Attachment객체생성)
+		for(MultipartFile upFile : upFileList) {
+			if(!upFile.isEmpty()) {
+				// a. 서버컴퓨터에 저장
+				String renamedFilename = HelloSpringUtils.getRenamedFilename(upFile.getOriginalFilename()); // 20220816_193012345_123.txt
+				File destFile = new File(saveDirectory, renamedFilename);
+				upFile.transferTo(destFile); // 해당경로에 파일을 저장
+				
+				// b. DB저장을 위해 Attachment객체 생성
+				Attachment attach = new Attachment(upFile.getOriginalFilename(), renamedFilename);
+				attach.setBoardNo(board.getNo()); // fk boardNo 설정
+				board.add(attach);
+			}
+		}
+//		3. 게시글수정
+		result = boardService.updateBoard(board);
+		
+//		4. 사용자 메세지 
+		redirectAttr.addFlashAttribute("msg", "게시글을 성공적으로 수정했습니다");
+		return "redirect:/board/boardDetail.do?no=" + board.getNo();
 	}
-	
-	
 }

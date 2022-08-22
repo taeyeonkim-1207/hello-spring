@@ -212,3 +212,5 @@ from board b
     left outer join attachment a
         on b.no = a.board_no
 where b.no=81;
+
+select * from dev;

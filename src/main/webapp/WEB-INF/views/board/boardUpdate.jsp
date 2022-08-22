@@ -19,12 +19,13 @@ div#board-container label.custom-file-label{text-align:left;}
 		action="${pageContext.request.contextPath}/board/boardUpdate.do" 
 		method="post"
 		enctype="multipart/form-data">
+		<input type="hidden" name="no" value="${board.no}" />
 		<input type="text" class="form-control" placeholder="제목" name="title" id="title" value="${board.title}" required>
 		<input type="text" class="form-control" name="memberId" value="${board.memberId}" readonly required>
 		
 		<c:forEach items="${board.attachments}" var="attach" varStatus="vs">
 			<div class="btn-group-toggle p-0 mb-3" data-toggle="buttons">
-				<label class="btn btn-outline-danger btn-block style="overflow-hidden" title="">
+				<label class="btn btn-outline-danger btn-block" style="overflow: hidden" title="">
 					<input type="checkbox" id="delFile${vs.count}" name="delFile" value="${attach.no}">
 					첨부파일삭제 - ${attach.originalFilename}
 				</label>

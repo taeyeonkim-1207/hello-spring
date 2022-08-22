@@ -3,32 +3,48 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.spring.demo.model.dao.DemoDao">
-
-	<insert id="insertDev">
-		insert into dev
-		values (seq_dev_no.nextval,#{name},#{career},#{email},#{gender},#{lang},default)
+	<insert id="insertDev" parameterType="dev">
+		insert into dev 
+		values ( seq_dev_no.nextval, #{name}, #{career},#{email}, #{gender}, #{lang}, default)
+		
+		<selectKey order="AFTER" resultType="_int" keyProperty="no">
+			select seq_dev_no.currval 
+			from dual 
+		</selectKey>
 	</insert>
 	
-	<select id="selectDevList" resultMap="devMap">
-		select * from dev order by no
+	<select id="selectDevList" resultMap="devMap"> 
+		select * from dev order by no 
+	</select>
+	
+	<select id="selectOneDev" resultMap="devMap"> 
+		select * from dev where no = #{no} 
 	</select>
 	
 	<resultMap type="dev" id="devMap">
-		<result column="lang" property="lang"/>
+		<result column="lang" property="lang" />
 	</resultMap>
 	
-	<select id="selectOneDev" resultMap="devMap">
-		select * from dev where no = #{no}
-	</select>
-	
-	<update id="updateDev">
+	<update id="updateDev"> 
 		update dev 
-		set name = #{name}, career = #{career}, email = #{email}, gender = #{gender}, lang = #{lang}
+		set name = #{name}, email = #{email}, career = #{career}, gender = #{gender}, lang = #{lang} 
+		where no = #{no} 
+	</update>
+	
+	<!-- set태그는 set 구문 마지막의 ,를 제거해준다. -->
+	<update id="updatePartialDev">
+		update dev
+		<set>
+			<if test="name != null and name != ''"> name = #{name}, </if>
+			<if test="email != null and email != ''"> email = #{email}, </if>
+			<if test="career != null and career != 0"> career = #{career}, </if>
+			<if test="gender != null and gender != ''"> gender = #{gender}, </if>
+			<if test="lang != null"> lang = #{lang} </if>
+		</set>
 		where no = #{no}
 	</update>
 	
-	<delete id="deleteDev">
-		delete from dev where no = #{no}
+	<delete id="deleteDev"> 
+		delete from dev where no = #{no} 
 	</delete>
-	
- </mapper>
+</mapper>

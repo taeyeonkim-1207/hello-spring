@@ -20,5 +20,9 @@ public interface BoardService {
 
 	Attachment selectOneAttachment(int no);
 
+	int deleteAttachment(int attachNo);
+
+	int updateBoard(Board board);
+
 	
 }
