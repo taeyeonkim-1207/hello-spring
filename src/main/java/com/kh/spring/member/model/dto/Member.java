@@ -1,38 +1,56 @@
 package com.kh.spring.member.model.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.kh.spring.demo.model.dto.Gender;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.ToString;
 
-// dto는 bean으로 만들어 사용하지 않을 것, POJO스타일
-// Getter, Setter, RequiredArgsConstructor, ToString, EqualsAndHashCode, lombok.Value
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
-	@NonNull
-	private String memberId;
-	@NonNull
-	private String password;
-	@NonNull
-	private String name;
-	private Gender gender;
-	@DateTimeFormat(pattern = "yyyy-MM-dd") //LocalDate에서 필요한 처리.
-	private LocalDate birthday;
-	private String email;
-	@NonNull
-	private String phone;
-	private String address;
-	private String[] hobby;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-	private boolean enabled;
+@ToString(callSuper = true)
+public class Member extends MemberEntity implements UserDetails {
+
+	/**
+	 * SimpleGrantedAuthority
+	 * - 문자열로 권한을 관리
+	 * - "ROLE_USER" -> new SimpleGrantedAuthority("ROLE_USER") 
+	 * */
+	
+	private List<SimpleGrantedAuthority> authorities;
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	@Override
+	public String getUsername() {
+		return memberId;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return enabled;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return enabled;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return enabled;
+	}
+
 }

@@ -27,8 +27,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<context:component-scan
-		base-package="com.kh.spring" />
+	<context:component-scan base-package="com.kh.spring" />
 
 	<!-- #8. interceptor 등록, 로그인처리 -->
 	<interceptors>
@@ -37,6 +36,7 @@
 			<beans:bean id="logInterceptor"
 				class="com.kh.spring.common.interceptor.LogInterceptor" />
 		</interceptor>
+		<!--  
 		<interceptor>
 			<mapping path="/member/memberDetail.do" />
 			<mapping path="/member/memberUpdate.do" />
@@ -47,6 +47,7 @@
 			<beans:bean id="loginInteceptor"
 				class="com.kh.spring.common.interceptor.LoginInterceptor" />
 		</interceptor>
+		-->
 	</interceptors>
 	
 	<!-- #9.1 aop관련 어노테이션등록처리 -->
