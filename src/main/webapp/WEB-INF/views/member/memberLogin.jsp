@@ -68,10 +68,15 @@
 							type="password" class="form-control" name="password"
 							placeholder="비밀번호" required>
 					</div>
-					<div class="modal-footer">
-						<button type="submit" class="btn btn-outline-success">로그인</button>
-						<button type="button" class="btn btn-outline-success"
-							data-dismiss="modal">취소</button>
+					<div class="modal-footer justify-content-between">
+						<div>
+							<input type="checkbox" name="remember-me" class="form-check-input" />
+							<label for="remember-me" class="form-check-label">로그인유지</label>
+						</div>
+						<div>
+							<button type="submit" class="btn btn-outline-success">로그인</button>
+							<button type="button" class="btn btn-outline-success" data-dismiss="modal">취소</button>
+						</div>
 					</div>
 				</form:form>
 			</div>

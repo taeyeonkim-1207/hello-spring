@@ -18,15 +18,12 @@
 	<http auto-config="true">
 		<intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/index.jsp" access="permitAll" />
-		<intercept-url pattern="/member/memberEnroll.do"
-			access="isAnonymous()" />
-		<intercept-url pattern="/member/memberLogin.do"
-			access="isAnonymous()" />
-		<intercept-url pattern="/member/memberLogout.do"
-			access="permitAll" />
-		<intercept-url pattern="/admin/**"
-			access="hasRole('ADMIN')" />
-
+		<intercept-url pattern="/member/memberEnroll.do" access="isAnonymous()" />
+		<intercept-url pattern="/member/memberLogin.do" access="isAnonymous()" />
+		<intercept-url pattern="/member/checkIdDuplicate.do" access="isAnonymous()" />
+		<intercept-url pattern="/board/boardList.do" access="permitAll" />
+		<intercept-url pattern="/member/memberLogout.do" access="permitAll" />
+		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 
 		<!-- login-page : 로그인폼 요청. 작성필요 login-processing-url : security로그인 처리. 
@@ -45,6 +42,14 @@
 		<!-- Cross-site RequestForgery 공격대비설정 - 사용자의 특정권한을 이용하여 공격자의 의도된 행동을 실행하게 
 			만드는 공격법 - 특정 사용자의 권한수정, 등록/수정/삭제 - 모든 post요청에 spring이 제공하는 token값 검증 -->
 		<csrf disabled="false" />
+		
+		<!-- 
+			remember me 설정 
+			- token-validity-seconds : 유효기간 초단위. 60*60*24*14	
+		-->
+	<remember-me data-source-ref="dataSource" token-validity-seconds="1209600"/>
+	<access-denied-handler error-page="/error/accessDenied.do"/>
+			
 	</http>
 	<authentication-manager>
 		<authentication-provider

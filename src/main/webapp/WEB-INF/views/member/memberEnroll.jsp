@@ -116,8 +116,14 @@ document.querySelector("#memberId").addEventListener('keyup', (e) => {
 		return;
 	}
 	
+	const headers = {};
+	headers['${_csrf.headerName}'] = '${_csrf.token}';
+	console.log(headers);
+	
 	$.ajax({
 		url : "${pageContext.request.contextPath}/member/checkIdDuplicate.do",
+		method: "POST",
+		headers,
 		data : {memberId},
 		success(response){
 			console.log(response); // js object
